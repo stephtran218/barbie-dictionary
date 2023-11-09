@@ -74,11 +74,12 @@ const allWords = [
     }
   ];
     
-    //3. This function will create a p element for the words's definition to be displayed in the screen
+//3. This function will create a p element for the words's definition to be displayed in the screen
 function createDefinitionElement (userWord){
   //This allows the words that are searched to not be case sensitive so the search bar can take "yes" or "Yes" without running into an issue
   const searchedWord = userWord.toLowerCase();
-  const specificDefinition = findDefinition(searchedWord);
+  //This calls the function findWord
+  const specificDefinition = findWord(searchedWord);
 
         
   if(specificDefinition){
@@ -94,8 +95,11 @@ function createDefinitionElement (userWord){
     //Puts wordHeader into definitionElement's class as child element 
     definitionElement.appendChild(wordHeader);
 
+    //This creates a new element for the part of speech
     const partOfSpeech = document.createElement ("p");
+    //This sets the content of the partOfSpeech element to the partOfSpeech property in the specificDefinition object
     partOfSpeech.innerText = specificDefinition.partOfSpeech;
+    //This puts the part of speech element as a child of the parent element "definitionElement"
     definitionElement.appendChild(partOfSpeech);
 
     //This creates a numbered list for the definitions when it displays
@@ -121,34 +125,48 @@ function createDefinitionElement (userWord){
   return null;
 }
 
-function findDefinition(userWord) {
+//This matches the word the user typed in with the word in the dictionary
+function findWord(userWord) {
+  //Even when the user types in their word in all caps or just one, it will be converted to lowercase so that it can be found in the code
   const lowercasedInput = userWord.toLowerCase();
-    
+  
+  //This for loop will look through the elements in the allWords array 
   for (let i = 0; i < allWords.length; i++) {
+    //This assigns the ith word in the array to the specificDefinition element
     const specificDefinition = allWords[i];
+    //This converts the word to lowercase so it;s not case sensitive
     const lowercasedWord = specificDefinition.word.toLowerCase();
     
+    //If the user's lowercased word matches the lowercased word in the dictionary, it will return the correct definition
     if (lowercasedInput === lowercasedWord) {
       return specificDefinition;
     }
   }
-    
+  
+  //This will return null if the word couldn't be found in the dictionary
   return null;
 }
 
+//This creates the function that once the user clicks on the search button, the word they typed in the search bar will be taken as the input
 function searchButtonClicked() {
+  //This takes what the user typed in and makes it the "userWord" so that it can be applied in the code
   const userWord = inputElement.value;
+  //This calls the function createDefinitionElement, using the userWord as the input
   const definitionElement = createDefinitionElement(userWord);
 
   //Clears the page so a new word can get searched
   definitionsList.innerHTML = "";
 
+  //If the word inputted is not a word in the code, then the dictionary will respond with "Word not found."
   if (definitionElement) {
     definitionsList.appendChild(definitionElement);
+    //This keeps the response hidden until it's needed
     notFoundMessage.style.display = "none";
   } 
   else {
+    //This clears the definitionsList element
     definitionsList.innerHTML = "";
+    //This will make the "Word not found." message appear
     notFoundMessage.style.display = "block";
   }
 
